@@ -5,8 +5,8 @@ from Python lists and numpy arrays.
 """
 
 import numpy as np
-from typing import Union, List, Optional, Iterable
-
+from typing import Union, List, Optional, Iterable, Iterator
+from fixedpoint.fixedpoint import *
 
 class FixedPointArray:
     """
@@ -138,9 +138,14 @@ class FixedPointArray:
         else:
             raise TypeError(f"Invalid index type: {type(index)}")
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Union['FixedPointArray', 'FixedPoint']]:
+        """
+        Iterate over the array.
+        
+        For 1D arrays, yields individual FixedPoint elements.
+        For multi-dimensional arrays, yields FixedPointArray slices along the first axis.
+        """
         if self.ndim == 1:
-            # Don't use return - iterate directly
             for fp in self._fixed_points:
                 yield fp
         else:
