@@ -5,10 +5,8 @@ from Python lists and numpy arrays.
 """
 
 import numpy as np
-from typing import Union, List, Optional, Iterable, Iterator, Generator, TYPE_CHECKING
+from typing import Union, List, Optional, Iterable
 
-if TYPE_CHECKING:
-    from fixedpoint import FixedPoint
 
 class FixedPointArray:
     """
@@ -140,13 +138,7 @@ class FixedPointArray:
         else:
             raise TypeError(f"Invalid index type: {type(index)}")
 
-    def __iter__(self) -> Generator['FixedPointArray', None, None]:
-        """
-        Iterate over the array.
-        
-        For 1D arrays, yields individual FixedPoint elements.
-        For multi-dimensional arrays, yields FixedPointArray slices along the first axis.
-        """
+    def __iter__(self):
         if self.ndim == 1:
             for fp in self._fixed_points:
                 yield fp
@@ -300,6 +292,22 @@ class FixedPointArray:
             raise TypeError(f"Unsupported operand type: {type(other)}")
         
         return FixedPointArray._from_fixed_points(result_fps, self.shape, self.config)
+
+    def __float__(self):
+        """
+        Convert FixedPointArray to float.
+        
+        For scalar arrays (size=1), returns a single float.
+        For larger arrays, returns a numpy array of floats.
+        This allows direct conversion: float(fp_array) or np.array(fp_array, dtype=float)
+        """
+        float_array = np.array([float(fp) for fp in self._fixed_points])
+        reshaped = float_array.reshape(self.shape)
+        
+        if self.size == 1:
+            return float(reshaped.item())
+        else:
+            return reshaped
 
 
 def from_array(
