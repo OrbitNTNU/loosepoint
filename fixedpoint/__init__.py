@@ -40,6 +40,7 @@ __version__ = "1.0.1"
 
 from fixedpoint.fixedpoint import *  # noqa # ignore unused imports
 from fixedpoint.functions import *  # noqa # ignore unused imports
+from fixedpoint.fixedpoint_array import * # noqa # ignore unused imports
 
 
 class FixedPointError(Exception):
