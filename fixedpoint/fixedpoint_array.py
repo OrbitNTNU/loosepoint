@@ -5,8 +5,10 @@ from Python lists and numpy arrays.
 """
 
 import numpy as np
-from typing import Union, List, Optional, Iterable, Iterator
-from fixedpoint.fixedpoint import *
+from typing import Union, List, Optional, Iterable, Iterator, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fixedpoint import FixedPoint
 
 class FixedPointArray:
     """
