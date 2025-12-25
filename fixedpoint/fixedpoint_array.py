@@ -178,7 +178,7 @@ class FixedPointArray:
     def __str__(self):
         """User-friendly string representation."""
         arr_str = self.to_numpy().__str__()
-        return f"FixedPointArray({arr_str}, qformat='{self.qformat}')"
+        return f"FixedPointArray(\n{arr_str},\n qformat='{self.qformat}')"
     
     @property
     def qformat(self):
