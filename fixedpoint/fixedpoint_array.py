@@ -293,23 +293,6 @@ class FixedPointArray:
         
         return FixedPointArray._from_fixed_points(result_fps, self.shape, self.config)
 
-    def __float__(self):
-        """
-        Convert FixedPointArray to float.
-        
-        For scalar arrays (size=1), returns a single float.
-        For larger arrays, returns a numpy array of floats.
-        This allows direct conversion: float(fp_array) or np.array(fp_array, dtype=float)
-        """
-        float_array = np.array([float(fp) for fp in self._fixed_points])
-        reshaped = float_array.reshape(self.shape)
-        
-        if self.size == 1:
-            return float(reshaped.item())
-        else:
-            return reshaped
-
-
 def from_array(
     init_array: Union[List, np.ndarray],
     signed: Optional[bool] = None,
