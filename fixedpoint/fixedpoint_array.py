@@ -131,6 +131,20 @@ class FixedPointArray:
             )
         else:
             raise TypeError(f"Invalid index type: {type(index)}")
+
+    def __iter__(self):
+        if self.ndim == 1:
+            return iter(self._fixed_points)
+        else:
+            row_size = int(np.prod(self.shape[1:]))
+            for i in range(self.shape[0]):
+                start = i * row_size
+                end = start + row_size
+                yield FixedPointArray._from_fixed_points(
+                    self._fixed_points[start:end],
+                    self.shape[1:],
+                    self.config
+                )
     
     def __setitem__(self, index, value):
         """Set FixedPoint element at the given index."""
