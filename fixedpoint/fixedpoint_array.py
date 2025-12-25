@@ -140,7 +140,7 @@ class FixedPointArray:
         else:
             raise TypeError(f"Invalid index type: {type(index)}")
 
-    def __iter__(self) -> Generator[Union['FixedPointArray', 'FixedPoint'], None, None]:
+    def __iter__(self) -> Generator['FixedPointArray', None, None]:
         """
         Iterate over the array.
         
