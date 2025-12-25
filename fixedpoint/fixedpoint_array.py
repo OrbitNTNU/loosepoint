@@ -140,7 +140,9 @@ class FixedPointArray:
 
     def __iter__(self):
         if self.ndim == 1:
-            return iter(self._fixed_points)
+            # Don't use return - iterate directly
+            for fp in self._fixed_points:
+                yield fp
         else:
             row_size = int(np.prod(self.shape[1:]))
             for i in range(self.shape[0]):
