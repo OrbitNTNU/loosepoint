@@ -111,15 +111,21 @@ class FixedPointArray:
             flat_index = np.ravel_multi_index(index, self.shape)
             return self._fixed_points[flat_index]
         elif isinstance(index, (int, np.integer)):
+            if index < 0:
+                index += self.shape[0]
+            if index < 0 or index >= self.shape[0]:
+                raise IndexError("FixedPointArray index out of range")
+
             if self.ndim == 1:
                 return self._fixed_points[index]
             else:
-                start_idx = index * np.prod(self.shape[1:])
-                end_idx = (index + 1) * np.prod(self.shape[1:])
+                row_size = int(np.prod(self.shape[1:]))
+                start_idx = index * row_size
+                end_idx = start_idx + row_size
                 sub_fps = self._fixed_points[start_idx:end_idx]
                 return FixedPointArray._from_fixed_points(
-                    sub_fps, 
-                    self.shape[1:], 
+                    sub_fps,
+                    self.shape[1:],
                     self.config
                 )
         elif isinstance(index, slice):
