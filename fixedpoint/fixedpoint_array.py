@@ -220,7 +220,70 @@ class FixedPointArray:
     def flatten(self):
         """Return a flattened 1D FixedPointArray."""
         return self.reshape((self.size,))
+
+    def transpose(self, axes=None):
+        """
+        Transpose the array.
+        """
+        # Convert to numpy array, transpose, then back to FixedPointArray
+        float_array = self.to_numpy()
+        transposed = np.transpose(float_array, axes=axes)
+        
+        # Create new FixedPointArray from transposed values
+        return FixedPointArray(transposed, **self.config)
     
+    @property
+    def T(self):
+        """
+        Transpose of the array.
+        
+        Same as self.transpose() for compatibility with NumPy.
+        """
+        return self.transpose()
+
+    def __matmul__(self, other):
+        """
+        Matrix multiplication using the @ operator.
+        
+        Performs matrix multiplication following NumPy semantics:
+        - For 2D arrays: standard matrix multiplication
+        - For 1D arrays: inner product (dot product)
+        - For higher dimensions: batch matrix multiplication
+        """
+        # Convert other to FixedPointArray if needed
+        if isinstance(other, (list, np.ndarray)):
+            other = FixedPointArray(other, **self.config)
+        elif not isinstance(other, FixedPointArray):
+            raise TypeError(f"Unsupported operand type for @: {type(other)}")
+        
+        # Get numpy arrays for the operation
+        a_np = self.to_numpy()
+        b_np = other.to_numpy()
+        
+        # Perform matrix multiplication using NumPy
+        result_np = np.matmul(a_np, b_np)
+        
+        # Convert back to FixedPointArray
+        return FixedPointArray(result_np, **self.config)
+    
+    def __rmatmul__(self, other):
+        """
+        Right matrix multiplication (when FixedPointArray is on the right).
+        
+        Handles cases like: list @ FixedPointArray or ndarray @ FixedPointArray
+        """
+        if isinstance(other, (list, np.ndarray)):
+            other = FixedPointArray(other, **self.config)
+            return other.__matmul__(self)
+        else:
+            raise TypeError(f"Unsupported operand type for @: {type(other)}")
+    
+    def dot(self, other):
+        """
+        Dot product (alternative to @ operator for compatibility).
+        """
+        return self.__matmul__(other) 
+
     @classmethod
     def _from_fixed_points(cls, fixed_points, shape, config):
         """Internal method to create a FixedPointArray from existing FixedPoint objects."""
@@ -302,7 +365,6 @@ def from_array(
 ) -> FixedPointArray:
     """Convenience function to create a FixedPointArray."""
     return FixedPointArray(init_array, signed=signed, m=m, n=n, **kwargs)
-
 
 def zeros(shape, signed=None, m=None, n=None, **kwargs):
     """Create a FixedPointArray filled with zeros."""
