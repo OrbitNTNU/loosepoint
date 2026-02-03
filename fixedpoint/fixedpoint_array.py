@@ -88,8 +88,13 @@ class FixedPointArray:
         # Create flat list of FixedPoint numbers
         flat_values = init_array.flatten()
         self._fixed_points = []
-        
+
         for value in flat_values:
+            # Convert FixedPoint to float so the new format (m, n) is applied
+            # Otherwise FixedPoint.__init__ just copies the existing format
+            if isinstance(value, FixedPoint):
+                value = float(value)
+
             # Create FixedPoint with specified configuration
             fp = self.FixedPoint(
                 value,
