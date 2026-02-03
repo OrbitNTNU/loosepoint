@@ -335,15 +335,15 @@ class FixedPointArray:
         """Element-wise division."""
         return self._elementwise_op(other, lambda a, b: a / b)
 
-    def __radd__(self, other):
+    def __radd__(self, other: Union[int, float, "FixedPointArray"]) -> "FixedPointArray":
         """Reflected element-wise addition (commutative)."""
         return self.__add__(other)
 
-    def __rsub__(self, other):
+    def __rsub__(self, other: Union[int, float, "FixedPointArray"]) -> "FixedPointArray":
         """Reflected element-wise subtraction: other - self."""
         return self._elementwise_op(other, lambda a, b: b - a)
 
-    def __rmul__(self, other):
+    def __rmul__(self, other: Union[int, float, "FixedPointArray"]) -> "FixedPointArray":
         """
         Reflected element-wise multiplication (commutative).
 
@@ -353,7 +353,7 @@ class FixedPointArray:
         """
         return self.__mul__(other)
 
-    def __rtruediv__(self, other):
+    def __rtruediv__(self, other: Union[int, float, "FixedPointArray"]) -> "FixedPointArray":
         """Reflected element-wise division: other / self."""
         return self._elementwise_op(other, lambda a, b: b / a)
 
