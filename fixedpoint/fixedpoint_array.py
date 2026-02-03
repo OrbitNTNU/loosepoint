@@ -334,7 +334,46 @@ class FixedPointArray:
     def __truediv__(self, other):
         """Element-wise division."""
         return self._elementwise_op(other, lambda a, b: a / b)
-    
+
+    def __radd__(self, other):
+        """Reflected element-wise addition (commutative)."""
+        return self.__add__(other)
+
+    def __rsub__(self, other):
+        """Reflected element-wise subtraction: other - self."""
+        return self._elementwise_op(other, lambda a, b: b - a)
+
+    def __rmul__(self, other):
+        """
+        Reflected element-wise multiplication (commutative).
+
+        Handles cases like:
+            literal * FixedPointArray  (literal is converted to FixedPoint)
+            FixedPoint * FixedPointArray
+        """
+        return self.__mul__(other)
+
+    def __rtruediv__(self, other):
+        """Reflected element-wise division: other / self."""
+        return self._elementwise_op(other, lambda a, b: b / a)
+
+    def __pow__(self, exponent):
+        """
+        Element-wise exponentiation.
+
+        Parameters
+        ----------
+        exponent : int
+            The exponent (must be a positive integer, per FixedPoint constraints)
+
+        Returns
+        -------
+        FixedPointArray
+            Array with each element raised to the given power
+        """
+        result_fps = [fp ** exponent for fp in self._fixed_points]
+        return FixedPointArray._from_fixed_points(result_fps, self.shape, self.config)
+
     def __neg__(self):
         """Element-wise negation."""
         result_fps = [-fp for fp in self._fixed_points]
